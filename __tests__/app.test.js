@@ -2,9 +2,10 @@ const app = require('../app');
 const request = require('supertest');
 const db = require('../db/connection.js');
 const seed = require('../db/seeds/seed.js');
-const testData = require('../db/data/test-data/index.js');
+const devData = require('../db/data/development-data');
+const endpoints = require('../endpoints.json');
 
-beforeEach(() => seed( testData ));
+beforeEach(() => seed( devData ));
 afterAll(() => db.end());
 
 describe('GET/api/topics', () => {
@@ -27,8 +28,23 @@ describe('Path not found', () => {
         .get ('/api/notAPath')
         .expect(404)
         .then((response) => {
-            console.log(response);
             expect(response.body.msg).toBe('Not found')
         });
     });
 });
+describe('endpoints', () => {
+    test('should return an object describing all the available endpoints on your API', () => {
+        return request(app)
+        .get ('/api')
+        .expect(200)
+        .then ((response) => {
+            console.log(response.body, '>>> test');
+            expect(response.body).toEqual({endpoints})
+        })
+    });
+    
+});
+
+
+
+
