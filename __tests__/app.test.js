@@ -14,7 +14,6 @@ describe('GET/api/topics', () => {
             .get('/api/topics')
             .expect(200)
             .then((response) => {
-                console.log(response.body, ">>> test");
             expect(response.body.topics.length).toBe(3);
             response.body.topics.forEach((topic) => {
                 expect(typeof topic.description).toBe('string');
@@ -76,7 +75,7 @@ describe('/api/articles/:article_id', () => {
         });
     });
 });
-describe.only('GET/api/articles', () => {
+describe('GET/api/articles', () => {
     test('returns an array of article object with the following properties: author, title, article_id, topic, created_at, votes, article_img_url & comment_count', () => {
         return request(app)
         .get('/api/articles')
@@ -106,3 +105,48 @@ describe.only('GET/api/articles', () => {
         });
     });
 });
+describe('GET/api/articles/:article_id/comments', () => {
+        test('returns an array of comments for the given article id', () => {
+            return request(app)
+            .get('/api/articles/9/comments')
+            .expect(200)
+            .then((response) => { 
+                expect(response.body.comments.length).toBe(2);
+                response.body.comments.forEach((comment) => {
+                    expect(typeof comment.comment_id).toBe('number');
+                    expect(typeof comment.votes).toBe('number');
+                    expect(typeof comment.created_at).toBe('string');
+                    expect(typeof comment.author).toBe('string');
+                    expect(typeof comment.body).toBe('string');
+                    expect(comment.article_id).toBe(9);
+                })
+            })
+        });
+        test('returns an array of comments for the given article id sorted by created_at in decending order', () => {
+            return request(app)
+            .get('/api/articles/9/comments')
+            .expect(200)
+            .then((response) => { 
+                expect(response.body.comments).toBeSortedBy('created_at', {
+                    descending: true,
+                });
+            })
+        });
+        test('returns error 404 when article id is valid but does not exist in the database', () => {
+            return request(app)
+            .get('/api/articles/100/comments')
+            .expect(404)
+            .then((response) => { 
+                expect(response.body.msg).toBe('No comments found for 100');
+            })
+        });
+        test('returns error 400 when invalid article id passed', () => {
+            return request(app)
+            .get('/api/articles/meow/comments')
+            .expect(400)
+            .then((response) => { 
+                expect(response.body.msg).toBe('Bad request');
+            })
+        });
+    });
+
