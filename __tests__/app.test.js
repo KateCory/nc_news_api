@@ -148,5 +148,33 @@ describe('GET/api/articles/:article_id/comments', () => {
                 expect(response.body.msg).toBe('Bad request');
             })
         });
+});
+describe('POST /api/articles/:article_id/comments', () => {
+    test('returns a comment for an article', () => {
+        const comment = { 
+            author: 'butter_bridge',
+            body: 'Starbursts are better.'
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(comment)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.newComment.article_id).toBe(1);
+            expect(response.body.newComment.body).toBe('Starbursts are better.');
+        });
     });
+    test('responds with 400 error for missing comment\'s body key', () => {
+        const comment = { 
+            author: 'butter_bridge'
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(comment)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+        });
+    });
+});
 
