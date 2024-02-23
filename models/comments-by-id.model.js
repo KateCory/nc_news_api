@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const { toLocaleString } = require('../db/data/test-data/topics');
 
 exports.selectCommentsById = (article_id) => {
     return db.query(`
@@ -12,6 +13,20 @@ exports.selectCommentsById = (article_id) => {
             });
           }
         return result.rows;
-    })
-}
+    });
+};
+
+exports.insertCommentById = ( { article_id, author, body }) => {
+  if(!article_id || !author || !body) {
+    return Promise.reject({ status: 400, msg: 'Bad request'});
+  }
+  return db.query(`
+  INSERT INTO comments (article_id, author, body) 
+  VALUES ($1, $2, $3)
+  RETURNING *;`, 
+  [article_id, author, body])
+  .then((result) => {
+    return result.rows[0];
+  });
+};
 
