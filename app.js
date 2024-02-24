@@ -4,6 +4,7 @@ const { getEndpoints } = require('./controllers/endpoints-controller');
 const { getArticleById, patchArticleById } = require('./controllers/articles-controller');
 const { getArticles } = require('./controllers/array-of-articles-controller');
 const { getCommentsById, postCommentsById, deleteCommentById } = require('./controllers/comments-by-id-controller');
+const { getUsers } = require('./controllers/users-controllers');
 const app = express();
 
 app.use(express.json());
@@ -19,6 +20,8 @@ app.patch('/api/articles/:article_id', patchArticleById);
 
 app.get('/api/articles/:article_id/comments', getCommentsById);
 app.post('/api/articles/:article_id/comments', postCommentsById);
+
+app.get('/api/users', getUsers);
 
 app.delete('/api/comments/:comment_id', deleteCommentById);
 
