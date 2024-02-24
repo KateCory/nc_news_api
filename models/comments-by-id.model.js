@@ -1,3 +1,4 @@
+const { response } = require('../app');
 const db = require('../db/connection');
 const { toLocaleString } = require('../db/data/test-data/topics');
 
@@ -30,3 +31,20 @@ exports.insertCommentById = ( { article_id, author, body }) => {
   });
 };
 
+exports.removeCommentById = ({ comment_id }) => {
+  return db
+  .query(`
+  DELETE FROM comments
+  WHERE comment_id = $1
+  RETURNING *;`, [comment_id])
+  .then((result) => {
+    const comment = result.rows[0];
+    if(!comment) {
+        return Promise.reject({ 
+          status: 404, 
+          msg: 'comment does not exist'
+        });
+    }
+    return comment;
+  });
+};

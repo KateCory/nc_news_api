@@ -4,6 +4,7 @@ const db = require('../db/connection.js');
 const seed = require('../db/seeds/seed.js');
 const testData = require('../db/data/test-data')
 const endpoints = require('../endpoints.json');
+const { response } = require('express');
 
 beforeEach(() => seed( testData ));
 afterAll(() => db.end());
@@ -199,3 +200,19 @@ describe('PATCH /api/articles/:article_id', () => {
         });
     });
 });
+describe('DELETE /api/comments/:comment_id', () => {
+    test('should delete the given comment by comment_id', () => {
+        return request(app)
+        .delete('/api/comments/9')
+        .expect(204);
+    });
+    test('responds with error 404 and error message when given a non-existent id', () => {
+        return request(app)
+          .delete('/api/comments/999')
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('comment does not exist');
+        });
+    });    
+});
+
