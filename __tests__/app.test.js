@@ -177,4 +177,25 @@ describe('POST /api/articles/:article_id/comments', () => {
         });
     });
 });
-
+describe('PATCH /api/articles/:article_id', () => {
+    test('should return updated article with votes amended', () => {
+        const newVote = { inc_votes : -100}
+        return request(app)
+        .patch('/api/articles/5')
+        .send(newVote)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.article.votes).toBe(-100);
+        });
+    });
+    test('returns 400 error with error messgage when incorrect type passed', () => {
+        const newVote = { inc_votes : "meow"}
+        return request(app)
+        .patch('/api/articles/5')
+        .send(newVote)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+        });
+    });
+});

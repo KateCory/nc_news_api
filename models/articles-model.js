@@ -14,3 +14,16 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
+exports.amendArticleById = ({ inc_votes, article_id }) => {
+  return db
+    .query(`UPDATE articles 
+     SET votes = votes + $1
+     WHERE articles.article_id = $2
+     RETURNING *;`, [inc_votes, article_id] )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
+
+
+
