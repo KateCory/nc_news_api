@@ -76,7 +76,7 @@ describe('GET/api/articles/:article_id', () => {
         });
     });
 });
-describe('GET/api/articles', () => {
+describe.only('GET/api/articles', () => {
     test('returns an array of article object with the following properties: author, title, article_id, topic, created_at, votes, article_img_url & comment_count', () => {
         return request(app)
         .get('/api/articles')
@@ -104,6 +104,15 @@ describe('GET/api/articles', () => {
                 descending: true,
             });
         });
+    });
+    test('should take a topic query that returns only the articles of the given topic', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toHaveLength(1);
+            //console.log(response.body.articles, "test");
+        })
     });
 });
 describe('GET/api/articles/:article_id/comments', () => {
@@ -229,5 +238,15 @@ describe('GET/api/users', () => {
             });
         });
     });
-    
 });
+// describe('GET /api/articles (topic query)', () => {
+//     test.only('returns articles that are categorised under the queried topic', () => {
+//         return request(app)
+//         .get('/api/articles?topic=cats')
+//         .expect(200)
+//         .then((response) => {
+//             //expect(response.body.articles.length).toBe(1);
+//             //console.log(response.body.articles, "test");
+//         })
+//     });
+// });
