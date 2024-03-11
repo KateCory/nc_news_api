@@ -6,6 +6,9 @@ const { getArticles } = require('./controllers/articles/array-of-articles-contro
 const { getCommentsById, postCommentsById, deleteCommentById } = require('./controllers/comments-by-id-controller');
 const { getUsers } = require('./controllers/users-controllers');
 const app = express();
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
